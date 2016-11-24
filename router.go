@@ -19,13 +19,13 @@ func Router() *Aero {
 	return &aero
 }
 
-func (aero *Aero) registerHandler(method string, path string, handlers ...http.HandlerFunc) {
-	pathRegex, namedParams := pathRegex(path)
+func (aero *Aero) registerHandler(method string, path string, handlers ...http.HandlerFunc) *mux {
+	regexPath, namedParams := pathRegex(path)
 
 	muxMethod := mux{
 		Path:     path,
 		Params:   namedParams,
-		Regex:    regexp.MustCompile(pathRegex),
+		Regex:    regexp.MustCompile(regexPath),
 		Handlers: handlers,
 	}
 
@@ -36,6 +36,7 @@ func (aero *Aero) registerHandler(method string, path string, handlers ...http.H
 	}
 
 	aero.routesByMethod[method] = append(aero.routesByMethod[method], &muxMethod)
+	return &muxMethod
 }
 
 //Get is to add a new GET route to the router
