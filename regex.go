@@ -4,7 +4,13 @@ import "strings"
 
 func pathRegex(path string) (string, []string) {
 	var items, namedParams []string
+	var regexPath string
+
 	parts := strings.Split(path, "/")
+	if parts[len(parts)-1] == "" {
+		parts = parts[:len(parts)-1]
+	}
+
 	for _, part := range parts {
 		if strings.HasPrefix(part, ":") {
 			name := strings.Trim(part, ":")
@@ -14,7 +20,6 @@ func pathRegex(path string) (string, []string) {
 			items = append(items, part)
 		}
 	}
-	//Match regex with and without trailing slash
-	regexPath := "^" + strings.Join(items, `\/`) + `/?` + "$"
+	regexPath = "^" + strings.Join(items, `\/`) + `/?` + "$"
 	return regexPath, namedParams
 }
