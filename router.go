@@ -15,7 +15,17 @@ type Aero struct {
 
 //Router is initialized router
 func Router() *Aero {
-	aero := Aero{}
+	aero := Aero{
+		routesByMethod: map[string][]*mux{
+			"GET":     make([]*mux, 0),
+			"POST":    make([]*mux, 0),
+			"PUT":     make([]*mux, 0),
+			"DELETE":  make([]*mux, 0),
+			"PATCH":   make([]*mux, 0),
+			"OPTIONS": make([]*mux, 0),
+			"HEAD":    make([]*mux, 0),
+		},
+	}
 	return &aero
 }
 
@@ -27,12 +37,6 @@ func (aero *Aero) registerHandler(method string, path string, handlers ...http.H
 		Params:   namedParams,
 		Regex:    regexp.MustCompile(regexPath),
 		Handlers: handlers,
-	}
-
-	if len(aero.routesByMethod[method]) == 0 {
-		aero.routesByMethod = map[string][]*mux{
-			method: make([]*mux, 0),
-		}
 	}
 
 	aero.routesByMethod[method] = append(aero.routesByMethod[method], &muxMethod)
